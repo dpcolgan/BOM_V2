@@ -1,0 +1,367 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="McShBoroModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="BoroughIncidents">
+          <Key>
+            <PropertyRef Name="IncidentID" />
+          </Key>
+          <Property Name="IncidentID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IncidentStatusID" Type="int" />
+          <Property Name="IncidentTypeID" Type="int" />
+          <Property Name="IncidentReportDate" Type="datetime" />
+          <Property Name="IncidentLastUpdated" Type="datetime" />
+          <Property Name="LastUpdatedBy" Type="nvarchar" MaxLength="75" />
+          <Property Name="IncidentReportedBy" Type="nvarchar" MaxLength="75" />
+          <Property Name="IncidentReportedByContactPhone" Type="nvarchar" MaxLength="15" />
+          <Property Name="ViolationCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="IncidentReportText" Type="nvarchar" MaxLength="500" />
+          <Property Name="IncidentStreetAddress1" Type="nvarchar" MaxLength="255" />
+          <Property Name="IncidentStreetAddress2" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="IncidentStatuses">
+          <Key>
+            <PropertyRef Name="IncidentStatusID" />
+          </Key>
+          <Property Name="IncidentStatusID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IncidentStatusDesc" Type="nvarchar" MaxLength="150" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'McShBoro.dbo.IncidentStatusHistory' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="IncidentStatusHistory">
+          <Key>
+            <PropertyRef Name="IncidentID" />
+            <PropertyRef Name="StatusChangeDate" />
+          </Key>
+          <Property Name="IncidentID" Type="int" Nullable="false" />
+          <Property Name="IncidentStatus" Type="int" />
+          <Property Name="StatusChangeDate" Type="datetime" Nullable="false" />
+          <Property Name="StatusChangedBy" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="IncidentTypes">
+          <Key>
+            <PropertyRef Name="IncidentTypeDesc" />
+          </Key>
+          <Property Name="IncidentTypeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IncidentTypeDesc" Type="nvarchar" MaxLength="255" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'McShBoro.dbo.vw_IncidentsStatus' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="vw_IncidentsStatus">
+          <Key>
+            <PropertyRef Name="IncidentID" />
+            <PropertyRef Name="StatusChangeDate" />
+            <PropertyRef Name="IncidentStatusDesc" />
+          </Key>
+          <Property Name="IncidentID" Type="int" Nullable="false" />
+          <Property Name="StatusChangeDate" Type="datetime" Nullable="false" />
+          <Property Name="StatusChangedBy" Type="nvarchar" MaxLength="255" />
+          <Property Name="IncidentStatusDesc" Type="nvarchar" MaxLength="150" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'McShBoro.sys.database_firewall_rules' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <Association Name="FK_BoroughIncidents_IncidentStatuses">
+          <End Role="IncidentStatuses" Type="Self.IncidentStatuses" Multiplicity="0..1" />
+          <End Role="BoroughIncidents" Type="Self.BoroughIncidents" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="IncidentStatuses">
+              <PropertyRef Name="IncidentStatusID" />
+            </Principal>
+            <Dependent Role="BoroughIncidents">
+              <PropertyRef Name="IncidentStatusID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <!--Errors Found During Generation:
+warning 6035: The relationship 'FK_BoroughIncidents_IncidentTypes' has columns that are not part of the key of the table on the primary side of the relationship. The relationship was excluded.
+        <Association Name="FK_BoroughIncidents_IncidentTypes" />-->
+        <Function Name="fn_diagramobjects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int" />
+        <Function Name="sp_alterdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="version" Type="int" Mode="In" />
+          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_creatediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="version" Type="int" Mode="In" />
+          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_dropdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_helpdiagramdefinition" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_helpdiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_renamediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="new_diagramname" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <EntityContainer Name="McShBoroModelStoreContainer">
+          <EntitySet Name="BoroughIncidents" EntityType="Self.BoroughIncidents" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="IncidentStatuses" EntityType="Self.IncidentStatuses" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="IncidentTypes" EntityType="Self.IncidentTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="IncidentStatusHistory" EntityType="Self.IncidentStatusHistory" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [IncidentStatusHistory].[IncidentID] AS [IncidentID], 
+    [IncidentStatusHistory].[IncidentStatus] AS [IncidentStatus], 
+    [IncidentStatusHistory].[StatusChangeDate] AS [StatusChangeDate], 
+    [IncidentStatusHistory].[StatusChangedBy] AS [StatusChangedBy]
+    FROM [dbo].[IncidentStatusHistory] AS [IncidentStatusHistory]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="vw_IncidentsStatus" EntityType="Self.vw_IncidentsStatus" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [vw_IncidentsStatus].[IncidentID] AS [IncidentID], 
+    [vw_IncidentsStatus].[StatusChangeDate] AS [StatusChangeDate], 
+    [vw_IncidentsStatus].[StatusChangedBy] AS [StatusChangedBy], 
+    [vw_IncidentsStatus].[IncidentStatusDesc] AS [IncidentStatusDesc]
+    FROM [dbo].[vw_IncidentsStatus] AS [vw_IncidentsStatus]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_BoroughIncidents_IncidentStatuses" Association="Self.FK_BoroughIncidents_IncidentStatuses">
+            <End Role="IncidentStatuses" EntitySet="IncidentStatuses" />
+            <End Role="BoroughIncidents" EntitySet="BoroughIncidents" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="McShBoroModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="BoroughIncident">
+          <Key>
+            <PropertyRef Name="IncidentID" />
+          </Key>
+          <Property Name="IncidentID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IncidentStatusID" Type="Int32" />
+          <Property Name="IncidentTypeID" Type="Int32" />
+          <Property Name="IncidentReportDate" Type="DateTime" Precision="3" />
+          <Property Name="IncidentLastUpdated" Type="DateTime" Precision="3" />
+          <Property Name="LastUpdatedBy" Type="String" MaxLength="75" FixedLength="false" Unicode="true" />
+          <Property Name="IncidentReportedBy" Type="String" MaxLength="75" FixedLength="false" Unicode="true" />
+          <Property Name="IncidentReportedByContactPhone" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="ViolationCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IncidentReportText" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="IncidentStreetAddress1" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="IncidentStreetAddress2" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="IncidentStatus" Relationship="Self.FK_BoroughIncidents_IncidentStatuses" FromRole="BoroughIncidents" ToRole="IncidentStatuses" />
+        </EntityType>
+        <EntityType Name="IncidentStatus">
+          <Key>
+            <PropertyRef Name="IncidentStatusID" />
+          </Key>
+          <Property Name="IncidentStatusID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IncidentStatusDesc" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="BoroughIncidents" Relationship="Self.FK_BoroughIncidents_IncidentStatuses" FromRole="IncidentStatuses" ToRole="BoroughIncidents" />
+        </EntityType>
+        <EntityType Name="IncidentType">
+          <Key>
+            <PropertyRef Name="IncidentTypeDesc" />
+          </Key>
+          <Property Name="IncidentTypeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IncidentTypeDesc" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="IncidentStatusHistory">
+          <Key>
+            <PropertyRef Name="IncidentID" />
+            <PropertyRef Name="StatusChangeDate" />
+          </Key>
+          <Property Name="IncidentID" Type="Int32" Nullable="false" />
+          <Property Name="IncidentStatus" Type="Int32" />
+          <Property Name="StatusChangeDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="StatusChangedBy" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="vw_IncidentsStatus">
+          <Key>
+            <PropertyRef Name="IncidentID" />
+            <PropertyRef Name="StatusChangeDate" />
+            <PropertyRef Name="IncidentStatusDesc" />
+          </Key>
+          <Property Name="IncidentID" Type="Int32" Nullable="false" />
+          <Property Name="StatusChangeDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="StatusChangedBy" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="IncidentStatusDesc" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_BoroughIncidents_IncidentStatuses">
+          <End Role="IncidentStatuses" Type="Self.IncidentStatus" Multiplicity="0..1" />
+          <End Role="BoroughIncidents" Type="Self.BoroughIncident" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="IncidentStatuses">
+              <PropertyRef Name="IncidentStatusID" />
+            </Principal>
+            <Dependent Role="BoroughIncidents">
+              <PropertyRef Name="IncidentStatusID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="BoroEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="BoroughIncidents" EntityType="Self.BoroughIncident" />
+          <EntitySet Name="IncidentStatuses" EntityType="Self.IncidentStatus" />
+          <EntitySet Name="IncidentTypes" EntityType="Self.IncidentType" />
+          <EntitySet Name="IncidentStatusHistories" EntityType="Self.IncidentStatusHistory" />
+          <EntitySet Name="vw_IncidentsStatus" EntityType="Self.vw_IncidentsStatus" />
+          <AssociationSet Name="FK_BoroughIncidents_IncidentStatuses" Association="Self.FK_BoroughIncidents_IncidentStatuses">
+            <End Role="IncidentStatuses" EntitySet="IncidentStatuses" />
+            <End Role="BoroughIncidents" EntitySet="BoroughIncidents" />
+          </AssociationSet>
+          <FunctionImport Name="sp_alterdiagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="version" Mode="In" Type="Int32" />
+            <Parameter Name="definition" Mode="In" Type="Binary" />
+          </FunctionImport>
+          <FunctionImport Name="sp_creatediagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="version" Mode="In" Type="Int32" />
+            <Parameter Name="definition" Mode="In" Type="Binary" />
+          </FunctionImport>
+          <FunctionImport Name="sp_dropdiagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_helpdiagramdefinition" ReturnType="Collection(McShBoroModel.sp_helpdiagramdefinition_Result)">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_helpdiagrams" ReturnType="Collection(McShBoroModel.sp_helpdiagrams_Result)">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_renamediagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="new_diagramname" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="sp_upgraddiagrams" />
+        </EntityContainer>
+        <ComplexType Name="sp_helpdiagramdefinition_Result">
+          <Property Type="Int32" Name="version" Nullable="true" />
+          <Property Type="Binary" Name="definition" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="sp_helpdiagrams_Result">
+          <Property Type="String" Name="Database" Nullable="true" MaxLength="128" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="128" />
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
+          <Property Type="Int32" Name="OwnerID" Nullable="false" />
+        </ComplexType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="McShBoroModelStoreContainer" CdmEntityContainer="BoroEntities">
+          <EntitySetMapping Name="BoroughIncidents">
+            <EntityTypeMapping TypeName="McShBoroModel.BoroughIncident">
+              <MappingFragment StoreEntitySet="BoroughIncidents">
+                <ScalarProperty Name="IncidentID" ColumnName="IncidentID" />
+                <ScalarProperty Name="IncidentStatusID" ColumnName="IncidentStatusID" />
+                <ScalarProperty Name="IncidentTypeID" ColumnName="IncidentTypeID" />
+                <ScalarProperty Name="IncidentReportDate" ColumnName="IncidentReportDate" />
+                <ScalarProperty Name="IncidentLastUpdated" ColumnName="IncidentLastUpdated" />
+                <ScalarProperty Name="LastUpdatedBy" ColumnName="LastUpdatedBy" />
+                <ScalarProperty Name="IncidentReportedBy" ColumnName="IncidentReportedBy" />
+                <ScalarProperty Name="IncidentReportedByContactPhone" ColumnName="IncidentReportedByContactPhone" />
+                <ScalarProperty Name="ViolationCode" ColumnName="ViolationCode" />
+                <ScalarProperty Name="IncidentReportText" ColumnName="IncidentReportText" />
+                <ScalarProperty Name="IncidentStreetAddress1" ColumnName="IncidentStreetAddress1" />
+                <ScalarProperty Name="IncidentStreetAddress2" ColumnName="IncidentStreetAddress2" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="IncidentStatuses">
+            <EntityTypeMapping TypeName="McShBoroModel.IncidentStatus">
+              <MappingFragment StoreEntitySet="IncidentStatuses">
+                <ScalarProperty Name="IncidentStatusID" ColumnName="IncidentStatusID" />
+                <ScalarProperty Name="IncidentStatusDesc" ColumnName="IncidentStatusDesc" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="IncidentTypes">
+            <EntityTypeMapping TypeName="McShBoroModel.IncidentType">
+              <MappingFragment StoreEntitySet="IncidentTypes">
+                <ScalarProperty Name="IncidentTypeID" ColumnName="IncidentTypeID" />
+                <ScalarProperty Name="IncidentTypeDesc" ColumnName="IncidentTypeDesc" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="IncidentStatusHistories">
+            <EntityTypeMapping TypeName="McShBoroModel.IncidentStatusHistory">
+              <MappingFragment StoreEntitySet="IncidentStatusHistory">
+                <ScalarProperty Name="IncidentID" ColumnName="IncidentID" />
+                <ScalarProperty Name="IncidentStatus" ColumnName="IncidentStatus" />
+                <ScalarProperty Name="StatusChangeDate" ColumnName="StatusChangeDate" />
+                <ScalarProperty Name="StatusChangedBy" ColumnName="StatusChangedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="vw_IncidentsStatus">
+            <EntityTypeMapping TypeName="McShBoroModel.vw_IncidentsStatus">
+              <MappingFragment StoreEntitySet="vw_IncidentsStatus">
+                <ScalarProperty Name="IncidentID" ColumnName="IncidentID" />
+                <ScalarProperty Name="StatusChangeDate" ColumnName="StatusChangeDate" />
+                <ScalarProperty Name="StatusChangedBy" ColumnName="StatusChangedBy" />
+                <ScalarProperty Name="IncidentStatusDesc" ColumnName="IncidentStatusDesc" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="sp_alterdiagram" FunctionName="McShBoroModel.Store.sp_alterdiagram" />
+          <FunctionImportMapping FunctionImportName="sp_creatediagram" FunctionName="McShBoroModel.Store.sp_creatediagram" />
+          <FunctionImportMapping FunctionImportName="sp_dropdiagram" FunctionName="McShBoroModel.Store.sp_dropdiagram" />
+          <FunctionImportMapping FunctionImportName="sp_helpdiagramdefinition" FunctionName="McShBoroModel.Store.sp_helpdiagramdefinition">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="McShBoroModel.sp_helpdiagramdefinition_Result">
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_helpdiagrams" FunctionName="McShBoroModel.Store.sp_helpdiagrams">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="McShBoroModel.sp_helpdiagrams_Result">
+                <ScalarProperty Name="Database" ColumnName="Database" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Owner" ColumnName="Owner" />
+                <ScalarProperty Name="OwnerID" ColumnName="OwnerID" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="McShBoroModel.Store.sp_renamediagram" />
+          <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="McShBoroModel.Store.sp_upgraddiagrams" />
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
